@@ -15,22 +15,22 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
 
-    // jwt: {
-    //     encode: ({ secret, token }) => {
-    //         const encodedToken = jsonwebtoken.sign({
-    //             ...token,
-    //             iss: "grafbase",
-    //             exp: Math.floor(Date.now() / 1000) + (60 * 60)
-    //         }, secret);
+    jwt: {
+        encode: ({ secret, token }) => {
+            const encodedToken = jsonwebtoken.sign({
+                ...token,
+                iss: "grafbase",
+                exp: Math.floor(Date.now() / 1000) + (60 * 60)
+            }, secret);
 
-    //         return encodedToken;
-    //     },
-    //     decode: async ({ secret, token }) => {
-    //         const decodedToken = jsonwebtoken.verify(token!, secret);
+            return encodedToken;
+        },
+        decode: async ({ secret, token }) => {
+            const decodedToken = jsonwebtoken.verify(token!, secret);
 
-    //         return decodedToken as JWT;
-    //     },
-    // },
+            return decodedToken as JWT;
+        },
+    },
 
     theme: {
         colorScheme: "light",
@@ -39,47 +39,45 @@ export const authOptions: NextAuthOptions = {
 
     callbacks: {
         async session({ session }) {
-            // const email = session?.user?.email as string;
+            const email = session?.user?.email as string;
 
-            // try {
-            //     const data = await getUser(email) as { user?: UserProfile }
+            try {
+                const data = await getUser(email) as { user?: UserProfile }
 
-            //     const newSession = {
-            //         ...session,
-            //         user: {
-            //             ...session.user,
-            //             ...data?.user
-            //         },
-            //     };
+                const newSession = {
+                    ...session,
+                    user: {
+                        ...session.user,
+                        ...data?.user
+                    },
+                };
                 
-            //     return newSession;
+                return newSession;
 
-            // } catch (error: any) {
-            //     console.log("Error retrieving user data", error.message);
-            //     return session;             
-            // }
-            return session;
+            } catch (error: any) {
+                console.log("Error retrieving user data", error.message);
+                return session;             
+            }
         },
         async signIn({ user }: { user: AdapterUser | User}) {
-            // try {
-            //     // get the user if they exists
-            //      const userExists = await getUser(user?.email as string) as { user?: UserProfile}
+            try {
+                // get the user if they exists
+                 const userExists = await getUser(user?.email as string) as { user?: UserProfile}
 
-            //     //if they do not exist, create them
-            //     if (!userExists.user) {
-            //         await createUser(
-            //             user.name as string, 
-            //             user.email as string, 
-            //             user.image as string
-            //         )                    
-            //     }
+                //if they do not exist, create them
+                if (!userExists.user) {
+                    await createUser(
+                        user.name as string, 
+                        user.email as string, 
+                        user.image as string
+                    )                    
+                }
 
-            //     return true;
-            // } catch (error: any) {
-            //     console.log(error);
-            //     return false;                                
-            // }
-            return true;
+                return true;
+            } catch (error: any) {
+                console.log(error);
+                return false;                                
+            }
         },
     },
 };
