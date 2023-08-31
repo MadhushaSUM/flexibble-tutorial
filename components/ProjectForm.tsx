@@ -15,7 +15,20 @@ type Props = {
 
 const ProjectForm = ({ type, session }: Props) => {
 
-    const handleFormSubmit = (e: React.FormEvent) => {};
+    const handleFormSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        setSubmitting(true);
+
+        try {
+            if (type === "create") {
+                // create new project
+            }
+        } catch (error) {
+            
+        }
+    };
+
     const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
 
@@ -36,6 +49,7 @@ const ProjectForm = ({ type, session }: Props) => {
             handleStateChange("image", result);
         }
     };
+
     const handleStateChange = (fieldName: string, value: string) => {
         setForm((prevState) => ({ ...prevState, [fieldName]: value }))
     };
